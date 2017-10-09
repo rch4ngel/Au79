@@ -1,9 +1,10 @@
-import { Room } from './../components/rooms/rooms.model';
+import { Environment } from './../.env';
 import { assert } from 'chai';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
+import { Room } from '../components/spark/room.model';
 
 @Injectable()
 export class SparkService {
@@ -17,7 +18,7 @@ export class SparkService {
     const headerDict = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Bearer OTNjOTdjM2EtZjIzZC00Zjg2LWExMzUtMjJlNGE1NTQ1OTgxODFmYTRhYTItNmE4'
+      'Authorization': Environment.CISCOSPARK_TOKEN
     }
 
     const headerObj = {
@@ -26,22 +27,26 @@ export class SparkService {
 
     return this.http.get('https://api.ciscospark.com/v1/rooms', headerObj)    
     .map((response: Response) => {
-      const rooms = response.json();
-      console.log(rooms)
+      const rooms = response.json()
+      console.log(rooms);
+      console.log(rooms.items[0].id);
       let transformedRooms: Room[] = [];
-      for(let room of rooms){
-        console.log("Pushing room " + room)
+      
+      for(var i = 0; i < rooms.items.length; i++){
+        console.log(rooms.items[i])
         transformedRooms.push(new Room(
-            room.id,
-            room.title,
-            room.type,
-            room.isLocked,
-            room.teamId,
-            room.lastActivity,
-            room.created)
-        );
+          rooms.items[i].id,
+          rooms.items[i].title,
+          rooms.items[i].type,
+          rooms.items[i].isLocked,
+          rooms.items[i].teamId,
+          rooms.items[i].lastActivity,
+          rooms.items[i].created)
+        )
       }
+
       this.rooms = transformedRooms;
+      console.log(transformedRooms);
       return transformedRooms;
     })
    // .catch((error: Response) => Observable.throw(error.json()));

@@ -1,6 +1,6 @@
-import { Room } from './../rooms/rooms.model';
 import { SparkService } from './../../service/spark.service';
 import { Component, OnInit } from '@angular/core';
+import { Room } from './room.model';
 
 @Component({
   selector: 'app-spark',
@@ -18,7 +18,6 @@ export class SparkComponent implements OnInit {
     .subscribe(
       (rooms: Room[]) => {
         this.rooms = rooms;
-        console.log(rooms);
       }
     )
   }
